@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,21 +21,34 @@ namespace View
     /// </summary>
     public partial class MainWindow : Window
     {
-        SpeechSynthesis.Manager controller;
+        SpeechSynthesis.Manager manager;
 
         public MainWindow()
         {
-            controller = new SpeechSynthesis.Manager();
+            manager = new SpeechSynthesis.Manager(this);
             InitializeComponent();
         }
 
         private void ListView_Initialized(object sender, EventArgs e)
         {
-            controller.LoadProducts().ForEach(v => { productsListView.Items.Add($"{v.Name} {v.Price}"); });
+            manager.LoadProducts().ForEach(v => { productsListView.Items.Add($"{v.Name} {v.Price}"); });
         }
 
         private void ProductsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            manager.synthesisManager.StartSpeaking(e.AddedItems[0].ToString());
+        }
+
+        public void LogDialog(string Text)
+        {
+            dialogTextBlock.Text += Text + Environment.NewLine;
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            //TODO find something better
+            Thread.Sleep(1000);
+            manager.StartShopping();
         }
     }
 }

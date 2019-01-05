@@ -1,19 +1,23 @@
-﻿using SpeechSynthesis.model;
+﻿using Recognition;
+using SpeechSynthesis.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using View;
 
 namespace SpeechSynthesis
 {
     public class Manager
     {
-        private Synthesis.SynthesisManager synthesisManager;
-        private Grammar.GrammarManager grammarManager;
+        public Synthesis.SynthesisManager synthesisManager { get; }
+        private Recognition.GrammarManager grammarManager;
+        private MainWindow mainWindow;
 
-        public Manager()
+
+        public Manager(MainWindow mainWindow)
         {
             using (var db = new DatabaseModel())
             {
@@ -22,10 +26,19 @@ namespace SpeechSynthesis
             }
 
             synthesisManager = new Synthesis.SynthesisManager();
-            grammarManager = new Grammar.GrammarManager();
-
+            grammarManager = new Recognition.GrammarManager();
+            grammarManager.SpeechRecognized += GrammarManager_SpeechRecognized1;
+            this.mainWindow = mainWindow;
         }
-        
+
+        private void GrammarManager_SpeechRecognized1(object sender, EventArgs e)
+        {
+            var args = e as GrammarManagerEventArgs;
+            if (args != null)
+            {
+                mainWindow.LogDialog($"Odczytano: {args.RecognizedText}");
+            }
+        }
         public List<Product> LoadProducts()
         {
             List<Product> products = new List<Product>();
@@ -61,9 +74,17 @@ namespace SpeechSynthesis
             }
         }
 
-        public void Printing(string str)
+        //public void Printing(string str)
+        //{
+        //    Console.WriteLine(str);
+        //}
+
+        public void StartShopping()
         {
-            Console.WriteLine(str);
+            var text = "WiTAJ W SKLEPIE ZIOMEK, CZEGO POTRZEBA?";
+            synthesisManager.StartSpeaking(text);
+            mainWindow.LogDialog($"System: {text}");
+            grammarManager.StartRecognizing();
         }
     }
 }
