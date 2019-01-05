@@ -24,7 +24,6 @@ namespace SpeechSynthesis
             synthesisManager = new Synthesis.SynthesisManager();
             grammarManager = new Grammar.GrammarManager();
 
-            synthesisManager.Speak("dupa ja pierdole");
         }
         
         public List<Product> LoadProducts()
