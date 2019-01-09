@@ -37,6 +37,8 @@ namespace SpeechSynthesis
             if (args != null)
             {
                 mainWindow.LogDialog($"Odczytano: {args.RecognizedText}");
+                mainWindow.LogDialog2($"Odczytano: {args.RecognizedText}");
+
             }
         }
         public List<Product> LoadProducts()
@@ -84,6 +86,8 @@ namespace SpeechSynthesis
             var text = "WiTAJ W SKLEPIE ZIOMEK, CZEGO POTRZEBA?";
             synthesisManager.StartSpeaking(text);
             mainWindow.LogDialog($"System: {text}");
+            mainWindow.LogDialog2($"System: {text}");
+
             grammarManager.StartRecognizing();
         }
     }

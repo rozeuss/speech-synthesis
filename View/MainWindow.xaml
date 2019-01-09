@@ -1,20 +1,43 @@
-﻿<Window x:Class="View.MainWindow"
+﻿<Window x:Name="MainWindow1" x:Class="View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="543.811" Width="1065.309" ContentRendered="Window_ContentRendered">
+        Title="SpeechSynthesis_2018_2019" Height="600" Width="1200" ContentRendered="Window_ContentRendered" ResizeMode="NoResize">
     <Grid>
-        <ListView x:Name="productsListView" HorizontalAlignment="Left" Height="253" Margin="55,56,0,0" VerticalAlignment="Top" Width="243" Initialized="ListView_Initialized" SelectionChanged="ProductsListView_SelectionChanged">
+        <ListView x:Name="productsListView" HorizontalAlignment="Left" Height="253" Margin="55,56,0,0" VerticalAlignment="Top" Width="243" SelectionChanged="ProductsListView_SelectionChanged" Loaded="ProductsListView_Loaded" Grid.Column="0">
             <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="Id" Width="Auto" DisplayMemberBinding="{Binding ProductId}" />
+                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Price" Width="Auto" DisplayMemberBinding="{Binding Price}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBlock x:Name="dialogTextBlock" HorizontalAlignment="Left" Margin="323,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="253" Width="349"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="176,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="56" Width="414" FontWeight="Bold" FontSize="36"><Run Text="Sklep muzyczny"/><LineBreak/><Run/></TextBlock>
+        <ListView x:Name="basketListView" HorizontalAlignment="Left" Height="232" Margin="897,89,0,0" VerticalAlignment="Top" Width="287">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Price" Width="Auto" DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="Quantity" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Total" Width="Auto" DisplayMemberBinding="{Binding Price}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <TextBox x:Name="totalTextBox" HorizontalAlignment="Left" Height="34" Margin="1008,326,0,0" TextWrapping="Wrap" Text="suma zakupow" VerticalAlignment="Top" Width="176" SpellCheck.IsEnabled="True" IsEnabled="False"/>
+        <Label x:Name="totalLabel" Content="Total" HorizontalAlignment="Left" Margin="897,326,0,0" VerticalAlignment="Top" Width="106" Height="34" FontWeight="Bold" FontSize="20" Foreground="Red"/>
+
+        <TextBlock x:Name="dialogTextBlock" HorizontalAlignment="Left" Margin="313,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="253" Width="569">
+
+        </TextBlock>
+        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left">
+
+            <ListBox x:Name="dialogListBox" HorizontalAlignment="Left" Height="203" Margin="314,326,0,0" VerticalAlignment="Top" Width="569"/>
+        </Border>
+        <Label x:Name="basketLabel" Content="Koszyk" HorizontalAlignment="Left" Margin="1008,46,-8.4,0" VerticalAlignment="Top" Width="194" Height="38" FontWeight="Bold" FontSize="20"/>
 
     </Grid>
 </Window>
