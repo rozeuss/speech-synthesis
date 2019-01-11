@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Speech.Recognition;
+using Microsoft.Speech.Synthesis;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace View
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         SpeechSynthesis.Manager manager;
@@ -29,8 +18,6 @@ namespace View
             manager = new SpeechSynthesis.Manager(this);
             InitializeComponent();
         }
-
-
 
         private void ProductsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -46,15 +33,15 @@ namespace View
         {
             dialogListBox.Items.Add(Text + Environment.NewLine);
             dialogListBox.SelectedIndex = dialogListBox.Items.Count - 1;
+            dialogListBox.SelectedIndex = -1;
+            var border = (Border)VisualTreeHelper.GetChild(dialogListBox, 0);
+            var scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
+            scrollViewer.ScrollToBottom();
             dialogListBox.ScrollIntoView(dialogListBox.SelectedItem);
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            //manager.StartShopping();
-
-
-
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
             timer.Start();
             timer.Tick += (sender2, args) =>
@@ -72,8 +59,27 @@ namespace View
             //{
             //    productsListView.Items.Add($"{v.Name} {v.Price}");
             //});
-       
-                        productsListView.ItemsSource = manager.LoadProducts();
+            productsListView.ItemsSource = manager.LoadProducts();
         }
+
+
+        public SpeechRecognitionEngine GetSRE()
+        {
+            return manager.grammarManager.SRE;
+        }
+
+        public SpeechSynthesizer GetTTS()
+        {
+            return manager.synthesisManager.TTS;
+        }
+
+        private void MainWindow1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            GetSRE().RecognizeAsyncStop();
+            GetSRE().UnloadAllGrammars();
+        }
+
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Recognition;
+﻿using Microsoft.Speech.Recognition;
+using Recognition;
 using SpeechSynthesis.model;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace SpeechSynthesis
     public class Manager
     {
         public Synthesis.SynthesisManager synthesisManager { get; }
-        private Recognition.GrammarManager grammarManager;
+        public Recognition.GrammarManager grammarManager { get; }
         private MainWindow mainWindow;
 
 
@@ -27,20 +28,41 @@ namespace SpeechSynthesis
 
             synthesisManager = new Synthesis.SynthesisManager();
             grammarManager = new Recognition.GrammarManager();
-            grammarManager.SpeechRecognized += GrammarManager_SpeechRecognized1;
+            grammarManager.SpeechRecognized += GrammarManager_SpeechRecognized;
             this.mainWindow = mainWindow;
         }
 
-        private void GrammarManager_SpeechRecognized1(object sender, EventArgs e)
+        private void GrammarManager_SpeechRecognized(object sender, EventArgs e)
         {
-            var args = e as GrammarManagerEventArgs;
+            //jesli rozpoznalo to sprawdz czy zawiera produkt do kupienia, jesli nei to powtorz,
+            // jesli tak idz dalej
+            var args = e as SpeechRecognizedEventArgs;
             if (args != null)
             {
-                mainWindow.LogDialog($"Odczytano: {args.RecognizedText}");
-                mainWindow.LogDialog2($"Odczytano: {args.RecognizedText}");
+                mainWindow.LogDialog($"Odczytano: {args.Result.Text} {args.Result.Confidence}");
+                mainWindow.LogDialog2($"Odczytano: {args.Result.Text} {args.Result.Confidence}");
+                if (args.Result.Confidence < 0.75)
+                {
+                    String text = "Proszę powtórzyć";
+                    synthesisManager.StartSpeaking(text);
+                    mainWindow.LogDialog($"System: {text}");
+                    mainWindow.LogDialog2($"System: {text}");
 
+                    grammarManager.StartRecognizing();
+                } else
+                {
+                    ChangeGrammar();
+                }
             }
         }
+
+        private void ChangeGrammar()
+        {
+            mainWindow.LogDialog($"ZMIENIAMY GRAMATYKE ELLO");
+            PrzelaczeniGramatyki();
+            //throw new NotImplementedException();
+        }
+
         public List<Product> LoadProducts()
         {
             List<Product> products = new List<Product>();
@@ -89,6 +111,18 @@ namespace SpeechSynthesis
             mainWindow.LogDialog2($"System: {text}");
 
             grammarManager.StartRecognizing();
+        }
+
+        private void PrzelaczeniGramatyki()
+        {
+            grammarManager.SRE.RecognizeAsyncCancel();
+            grammarManager.SRE.UnloadAllGrammars();
+            //if (pIdGrammar == 0)
+            //pIdGrammar = 1;
+            //else
+            //pIdGrammar = 0;
+            grammarManager.SRE.LoadGrammar(grammarManager.GetSecondGrammar());
+            grammarManager.SRE.RecognizeAsync(RecognizeMode.Multiple);
         }
     }
 }

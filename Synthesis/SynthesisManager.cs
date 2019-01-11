@@ -11,7 +11,7 @@ namespace Synthesis
     public class SynthesisManager
     {
         // Obiekt reprezentujący silnik syntezy mowy
-        private SpeechSynthesizer TTS;
+        public SpeechSynthesizer TTS;
         public SynthesisManager()
         {
             // Wywołanie konstruktra obiektu reprezentujęcego silnik syntezy mowy
@@ -43,7 +43,6 @@ namespace Synthesis
         public void StartSpeaking(string var0)
         {
             TTS.SpeakAsync(var0); //do gadania
-            //TTS.Speak(var0);
         }
 
         private void TTS_StateChanged(object sender, StateChangedEventArgs e)
