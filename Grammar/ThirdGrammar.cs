@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Recognition
 {
-    public class FirstGrammar
+    public class ThirdGrammar
     {
         public Grammar grammar { get; }
         System.Globalization.CultureInfo pRecognitionLanguage;
 
-        public FirstGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
+        public ThirdGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
         {
             this.pRecognitionLanguage = pRecognitionLanguage;
             grammar = init();

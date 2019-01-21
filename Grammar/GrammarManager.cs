@@ -12,16 +12,21 @@ namespace Recognition
     {
         public SpeechRecognitionEngine SRE { get; }
         public System.Globalization.CultureInfo pRecognitionLanguage = new System.Globalization.CultureInfo("pl-PL");
-        private FirstGrammar firstGrammar;
-        private SecondGrammar secondGrammar;
+        public Grammar[] pGrammars { get; }
 
         public GrammarManager()
         {
             SRE = new SpeechRecognitionEngine(pRecognitionLanguage);
             SRE.SpeechRecognized += SRE_SpeechRecognized;
             SRE.SetInputToDefaultAudioDevice();
-            Grammar grammar = new FirstGrammar(pRecognitionLanguage).grammar;
-            SRE.LoadGrammar(grammar);
+
+            pGrammars = new Grammar[3];
+
+
+            pGrammars[0] = new FirstGrammar(pRecognitionLanguage).grammar;
+            pGrammars[1] = new SecondGrammar(pRecognitionLanguage).grammar;
+            pGrammars[2] = new ThirdGrammar(pRecognitionLanguage).grammar;
+            SRE.LoadGrammar(pGrammars[0]);
         }
 
         public void StartRecognizing()
@@ -67,12 +72,6 @@ namespace Recognition
                 StopRecognizing();
                 OnSpeechRecognized(e);
             }
-        }
-
-        public Grammar GetSecondGrammar()
-        {
-            //TODO przerobic na Map i wyciaganie po id w klasie NGrammar
-            return new SecondGrammar(pRecognitionLanguage).grammar;
         }
 
 

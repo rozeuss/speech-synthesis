@@ -5,39 +5,142 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="SpeechSynthesis_2018_2019" Height="600" Width="1200" ContentRendered="Window_ContentRendered" ResizeMode="NoResize" Closing="MainWindow1_Closing">
+        Background="#222222"
+        Title="Sklep Muzyczny - SpeechSynthesis_2018_2019" Height="600" Width="1200" ContentRendered="Window_ContentRendered" ResizeMode="NoResize" Closing="MainWindow1_Closing">
+    <Window.Resources>
+        <Style TargetType="ListBoxItem">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="LightYellow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <ListView x:Name="productsListView" HorizontalAlignment="Left" Height="253" Margin="55,56,0,0" VerticalAlignment="Top" Width="243" SelectionChanged="ProductsListView_SelectionChanged" Loaded="ProductsListView_Loaded" Grid.Column="0">
-            <ListView.View>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60">
+            </RowDefinition>
+            <RowDefinition>
+            </RowDefinition>
+            <RowDefinition Height="50">
+            </RowDefinition>
+            <RowDefinition>
+            </RowDefinition>
+            <RowDefinition Height="100">
+            </RowDefinition>
+        </Grid.RowDefinitions>
+
+
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Produkty" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="30" FontWeight="Bold">
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF3F88CB"/>
+                    <GradientStop Color="#1C5D99" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+        </Label>
+        <Label Grid.Row="0" Grid.Column="1" Content="Dialog" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="30" FontWeight="Bold">
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF3F88CB" Offset="0"/>
+                    <GradientStop Color="#1C5D99" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+        </Label>
+        <Label Grid.Row="0" Grid.Column="2" x:Name="basketLabel" Content="Koszyk" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="30" FontWeight="Bold">
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF3F88CB" Offset="0"/>
+                    <GradientStop Color="#1C5D99" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+        </Label>
+
+
+
+        <ListView Grid.Row="1" Grid.Column="0" x:Name="productsListView" Margin="30,0,30,0" SelectionChanged="ProductsListView_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Loaded="ProductsListView_Loaded" BorderBrush="{x:Null}">
+
+                <ListView.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#BBCDE5" Offset="1"/>
+                    <GradientStop Color="White"/>
+                </LinearGradientBrush>
+            </ListView.Background>
+            <ListView.View >
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="Id" Width="Auto" DisplayMemberBinding="{Binding ProductId}" />
-                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Price" Width="Auto" DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="Nazwa" Width="150" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Cena" Width="90" DisplayMemberBinding="{Binding Price}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="176,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="56" Width="414" FontWeight="Bold" FontSize="36"><Run Text="Sklep muzyczny"/><LineBreak/><Run/></TextBlock>
-        <ListView x:Name="basketListView" HorizontalAlignment="Left" Height="232" Margin="897,89,0,0" VerticalAlignment="Top" Width="287">
+
+        <Border Grid.Row="1" Grid.Column="1" BorderThickness="5" BorderBrush="#FF3F88CB" Grid.RowSpan="2" CornerRadius="8">
+            <ListBox AlternationCount="2" x:Name="dialogListBox" BorderBrush="{x:Null}" BorderThickness="0" ClipToBounds="True" FontSize="16" FontFamily="Calibri Light">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Height" Value="30" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#BBCDE5" Offset="1"/>
+                        <GradientStop Color="White"/>
+                    </LinearGradientBrush>
+                </ListBox.Background>
+            </ListBox>
+        </Border>
+
+        <!--<DataGrid Name="dataGrid1"/>-->
+        <ListView Grid.Row="1" Grid.Column="2" x:Name="basketListView" Width="250" BorderBrush="{x:Null}"  >
+            <ListView.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#BBCDE5" Offset="1"/>
+                    <GradientStop Color="White"/>
+                </LinearGradientBrush>
+            </ListView.Background>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Price" Width="Auto" DisplayMemberBinding="{Binding Price}" />
-                    <GridViewColumn Header="Quantity" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Total" Width="Auto" DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="Nazwa" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Cena" Width="Auto" DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="Ilość" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Razem" Width="Auto" DisplayMemberBinding="{Binding Price}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox x:Name="totalTextBox" HorizontalAlignment="Left" Height="34" Margin="1008,326,0,0" TextWrapping="Wrap" Text="suma zakupow" VerticalAlignment="Top" Width="176" SpellCheck.IsEnabled="True" IsEnabled="False"/>
-        <Label x:Name="totalLabel" Content="Total" HorizontalAlignment="Left" Margin="897,326,0,0" VerticalAlignment="Top" Width="106" Height="34" FontWeight="Bold" FontSize="20" Foreground="Red"/>
 
-        <TextBlock x:Name="dialogTextBlock" HorizontalAlignment="Left" Margin="313,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="253" Width="569">
 
-        </TextBlock>
-        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left">
+        <Label Grid.Row="2" Grid.Column="2" x:Name="totalLabel" Content="Suma" HorizontalAlignment="Left" Width="90" Height="50" FontWeight="Bold" FontSize="20" Foreground="#639FAB"/>
+        <TextBox Grid.Row="2" Grid.Column="2" x:Name="totalTextBox" Height="30" TextWrapping="Wrap" Text="suma zakupow" Width="150" IsEnabled="False" HorizontalAlignment="Center"/>
 
-            <ListBox x:Name="dialogListBox" HorizontalAlignment="Left" Height="203" Margin="314,326,0,0" VerticalAlignment="Top" Width="569"/>
-        </Border>
-        <Label x:Name="basketLabel" Content="Koszyk" HorizontalAlignment="Left" Margin="1008,46,-8.4,0" VerticalAlignment="Top" Width="194" Height="38" FontWeight="Bold" FontSize="20"/>
+        <!--<TextBlock Grid.Row="1" Grid.Column="1" x:Name="dialogTextBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Grid.RowSpan="1">
 
+        </TextBlock>-->
+
+
+        <Label Grid.Row="4" Grid.Column="0" Content="Etap 1" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" FontStyle="Italic" Foreground="#BBCDE5"/>
+        <Label Grid.Row="4" Grid.Column="1" Content="Etap 2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" FontStyle="Italic" Foreground="#BBCDE5"/>
+        <Label Grid.Row="4" Grid.Column="2" Content="Etap 3" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" FontStyle="Italic" Foreground="#BBCDE5"/>
+
+        <ProgressBar Grid.Row="4" x:Name="progressBar" Minimum="0" Maximum="100" Margin="0,30" Grid.ColumnSpan="3" >
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="1193.6,40" MappingMode="Absolute" SpreadMethod="Reflect">
+                    <GradientStop Color="#FF00CDFF" Offset="1"/>
+                    <GradientStop Color="#FF1C5D99"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>

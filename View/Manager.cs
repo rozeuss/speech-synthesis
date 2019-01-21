@@ -1,12 +1,8 @@
 ﻿using Microsoft.Speech.Recognition;
-using Recognition;
 using SpeechSynthesis.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using View;
 
 namespace SpeechSynthesis
@@ -16,7 +12,7 @@ namespace SpeechSynthesis
         public Synthesis.SynthesisManager synthesisManager { get; }
         public Recognition.GrammarManager grammarManager { get; }
         private MainWindow mainWindow;
-
+        private int currentGrammar = 0;
 
         public Manager(MainWindow mainWindow)
         {
@@ -39,28 +35,32 @@ namespace SpeechSynthesis
             var args = e as SpeechRecognizedEventArgs;
             if (args != null)
             {
-                mainWindow.LogDialog($"Odczytano: {args.Result.Text} {args.Result.Confidence}");
-                mainWindow.LogDialog2($"Odczytano: {args.Result.Text} {args.Result.Confidence}");
-                if (args.Result.Confidence < 0.75)
+
+                LogDialogUser(args.Result.Text, args.Result.Confidence);
+                if (args.Result.Confidence < 0.70)
                 {
                     String text = "Proszę powtórzyć";
-                    synthesisManager.StartSpeaking(text);
-                    mainWindow.LogDialog($"System: {text}");
-                    mainWindow.LogDialog2($"System: {text}");
-
+                    LogDialogSystem(text);
                     grammarManager.StartRecognizing();
-                } else
+                }
+                else
                 {
-                    ChangeGrammar();
+                    SwitchGrammar();
+                    String text = "Okej ostro lecimy widzę, ile sztuk?";              
+                    LogDialogSystem(text);
                 }
             }
         }
 
-        private void ChangeGrammar()
+        private void SwitchGrammar()
         {
-            mainWindow.LogDialog($"ZMIENIAMY GRAMATYKE ELLO");
-            PrzelaczeniGramatyki();
-            //throw new NotImplementedException();
+            grammarManager.SRE.RecognizeAsyncCancel();
+            grammarManager.SRE.UnloadAllGrammars();
+            int nextGrammar = ++currentGrammar;
+            grammarManager.SRE.LoadGrammar(grammarManager.pGrammars[nextGrammar >= grammarManager.pGrammars.Length ? 0 : nextGrammar]);
+            grammarManager.SRE.RecognizeAsync(RecognizeMode.Multiple);
+            double value = ((double)currentGrammar / (double)grammarManager.pGrammars.Length) * 100;
+            mainWindow.progressBar.Value = value < 100.0 ? value : 100.0;
         }
 
         public List<Product> LoadProducts()
@@ -77,11 +77,11 @@ namespace SpeechSynthesis
         {
             using (var db = new DatabaseModel())
             {
-                Product product1 = new Product() { Name = "Gitara", Price = 2.5 };
-                Product product2 = new Product() { Name = "Perkusja", Price = 3.5 };
-                Product product3 = new Product() { Name = "Skrzypce", Price = 3.5 };
-                Product product4 = new Product() { Name = "Dzwoneczki", Price = 3.5 };
-                Product product5 = new Product() { Name = "Bas", Price = 3.5 };
+                Product product1 = new Product() { Name = "Gitara", Price = 250 };
+                Product product2 = new Product() { Name = "Perkusja", Price = 350 };
+                Product product3 = new Product() { Name = "Skrzypce", Price = 400 };
+                Product product4 = new Product() { Name = "Dzwoneczki", Price = 35 };
+                Product product5 = new Product() { Name = "Bas", Price = 300 };
                 var products = new List<Product>();
                 products.Add(product1);
                 products.Add(product2);
@@ -92,37 +92,30 @@ namespace SpeechSynthesis
                 Order order1 = new Order() { Address = "Radom", Person = "Palys", Products = orderProducts };
                 Order order2 = new Order() { Address = "Radom", Person = "Palys", Products = orderProducts };
                 db.Orders.Add(order1);
-                db.Orders.Add(order2);  
+                db.Orders.Add(order2);
                 db.Products.AddRange(products);
                 db.SaveChanges();
             }
         }
 
-        //public void Printing(string str)
-        //{
-        //    Console.WriteLine(str);
-        //}
 
         public void StartShopping()
         {
-            var text = "WiTAJ W SKLEPIE ZIOMEK, CZEGO POTRZEBA?";
-            synthesisManager.StartSpeaking(text);
-            mainWindow.LogDialog($"System: {text}");
-            mainWindow.LogDialog2($"System: {text}");
-
+            var text = "Siema?";
+            LogDialogSystem(text);
             grammarManager.StartRecognizing();
         }
 
-        private void PrzelaczeniGramatyki()
+        private void LogDialogSystem(string text)
         {
-            grammarManager.SRE.RecognizeAsyncCancel();
-            grammarManager.SRE.UnloadAllGrammars();
-            //if (pIdGrammar == 0)
-            //pIdGrammar = 1;
-            //else
-            //pIdGrammar = 0;
-            grammarManager.SRE.LoadGrammar(grammarManager.GetSecondGrammar());
-            grammarManager.SRE.RecognizeAsync(RecognizeMode.Multiple);
+            synthesisManager.StartSpeaking(text);
+            mainWindow.LogDialogSystem(text);
         }
+
+        private void LogDialogUser(string text, float confidence)
+        {
+            mainWindow.LogDialogUser(text, confidence);
+        }
+
     }
 }

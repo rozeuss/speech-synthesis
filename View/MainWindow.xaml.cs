@@ -1,5 +1,6 @@
 ﻿using Microsoft.Speech.Recognition;
 using Microsoft.Speech.Synthesis;
+using SpeechSynthesis.model;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,15 +22,21 @@ namespace View
 
         private void ProductsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            manager.synthesisManager.StartSpeaking(e.AddedItems[0].ToString());
+            var a = e.AddedItems[0] as Product;
+            manager.synthesisManager.StartSpeaking(a.Name.ToString() + ", cena" + a.Price.ToString());
         }
 
-        public void LogDialog(string Text)
+        public void LogDialogSystem(string text)
         {
-            dialogTextBlock.Text += Text + Environment.NewLine;
+            LogDialog($"System: " + text);
         }
 
-        public void LogDialog2(string Text)
+        public void LogDialogUser(string text, float confidence)
+        {
+            LogDialog($"Użytkownik: { text } (confidence: {confidence})");
+        }
+
+        private void LogDialog(string Text)
         {
             dialogListBox.Items.Add(Text + Environment.NewLine);
             dialogListBox.SelectedIndex = dialogListBox.Items.Count - 1;
@@ -55,11 +62,8 @@ namespace View
 
         private void ProductsListView_Loaded(object sender, RoutedEventArgs e)
         {
-            //manager.LoadProducts().ForEach(v =>
-            //{
-            //    productsListView.Items.Add($"{v.Name} {v.Price}");
-            //});
             productsListView.ItemsSource = manager.LoadProducts();
+
         }
 
 
@@ -78,7 +82,6 @@ namespace View
             GetSRE().RecognizeAsyncStop();
             GetSRE().UnloadAllGrammars();
         }
-
 
 
     }
