@@ -1,21 +1,19 @@
 ﻿using Microsoft.Speech.Recognition;
 using Microsoft.Speech.Recognition.SrgsGrammar;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Recognition
 {
     public class FirstGrammar
     {
+        public Dictionary<int, string> productIdGrammarDictionary { get; }
         public Grammar grammar { get; }
         System.Globalization.CultureInfo pRecognitionLanguage;
 
         public FirstGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
         {
             this.pRecognitionLanguage = pRecognitionLanguage;
+            productIdGrammarDictionary = new Dictionary<int, string>();
             grammar = init();
         }
         private Grammar init()
@@ -44,15 +42,19 @@ namespace Recognition
             ruleBezokolicznik.Add(bezokolicznik);
 
             SrgsRule ruleDopelnienie = new SrgsRule("Dopelnienie");
+            string guitarItem = "gitare";
+            string drumsItem = "perkusje";
+            string violinItem = "skrzypce";
+            productIdGrammarDictionary.Add(6, guitarItem);
+            productIdGrammarDictionary.Add(7, drumsItem);
+            productIdGrammarDictionary.Add(8, violinItem);
+
             SrgsOneOf dopelnienie = new SrgsOneOf(new SrgsItem[]
             {
-                new SrgsItem(0, 1, "gitare"),
-                new SrgsItem(0, 1, "perkusje"),
-                new SrgsItem(0, 1, "skrzypce")
+               new SrgsItem(0, 1, guitarItem), new SrgsItem(0, 1, drumsItem), new SrgsItem(0, 1, violinItem)
 
-            });
+        });
             ruleDopelnienie.Add(dopelnienie);
-
             // utwórz korzeń.
             SrgsRule rootRule = new SrgsRule("rootBiletomat");
             rootRule.Scope = SrgsRuleScope.Public;

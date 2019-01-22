@@ -13,6 +13,8 @@ namespace SpeechSynthesis
         public Recognition.GrammarManager grammarManager { get; }
         private MainWindow mainWindow;
         private int currentGrammar = 0;
+        public Dictionary<Product, string> ProductGrammarDict { get; }
+        public List<Product> products;
 
         public Manager(MainWindow mainWindow)
         {
@@ -21,10 +23,24 @@ namespace SpeechSynthesis
                 if (db.Products.Count() == 0)
                     InitalizeDb();
             }
+            loadProducts();
+
 
             synthesisManager = new Synthesis.SynthesisManager();
             grammarManager = new Recognition.GrammarManager();
             grammarManager.SpeechRecognized += GrammarManager_SpeechRecognized;
+            ProductGrammarDict = new Dictionary<Product, string>();
+
+            foreach (KeyValuePair<int, string> entry in grammarManager.FirstGrammar.productIdGrammarDictionary)
+            {
+                foreach (Product p in products)
+                {
+                    if (p.ProductId == entry.Key)
+                    {
+                        ProductGrammarDict.Add(p, entry.Value);
+                    }
+                }
+            };
             this.mainWindow = mainWindow;
         }
 
@@ -45,8 +61,31 @@ namespace SpeechSynthesis
                 }
                 else
                 {
+                    var appendText = "";
+                    foreach (var p in ProductGrammarDict)
+                    {
+                        var test = p.Value;
+
+                        args.Result.Words.ToList().ForEach(w =>
+                        {
+                            if (w.Text == test)
+                            {
+                                Console.WriteLine(w.Text);
+                                appendText = w.Text;
+                                mainWindow.basketListView.Items.Add(p.Key);
+                                
+                            }
+                        });
+
+
+                    }
+
+
                     SwitchGrammar();
-                    String text = "Okej ostro lecimy widzę, ile sztuk?";              
+                    if (!String.IsNullOrEmpty(appendText)) {
+                        LogDialogSystem($"Czyli chcesz {appendText}.");
+                    };
+                    String text = "Okej ostro lecimy widzę, ile sztuk?";
                     LogDialogSystem(text);
                 }
             }
@@ -63,10 +102,9 @@ namespace SpeechSynthesis
             mainWindow.progressBar.Value = value < 100.0 ? value : 100.0;
         }
 
-        public List<Product> LoadProducts()
+        private List<Product> loadProducts()
         {
-            List<Product> products = new List<Product>();
-
+            products = new List<Product>();
             using (var db = new DatabaseModel())
             {
                 products = db.Products.ToList();

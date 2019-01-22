@@ -2,6 +2,7 @@
 using Microsoft.Speech.Synthesis;
 using SpeechSynthesis.model;
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,6 +14,7 @@ namespace View
     public partial class MainWindow : Window
     {
         SpeechSynthesis.Manager manager;
+        private ObservableCollection<Product> basketItems;
 
         public MainWindow()
         {
@@ -62,7 +64,7 @@ namespace View
 
         private void ProductsListView_Loaded(object sender, RoutedEventArgs e)
         {
-            productsListView.ItemsSource = manager.LoadProducts();
+            productsListView.ItemsSource = manager.products;
 
         }
 
