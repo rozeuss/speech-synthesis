@@ -31,6 +31,12 @@ namespace SpeechSynthesis
             grammarManager.SpeechRecognized += GrammarManager_SpeechRecognized;
             ProductGrammarDict = new Dictionary<Product, string>();
 
+            SetupProductGrammarDict();
+            this.mainWindow = mainWindow;
+        }
+
+        private void SetupProductGrammarDict()
+        {
             foreach (KeyValuePair<int, string> entry in grammarManager.FirstGrammar.productIdGrammarDictionary)
             {
                 foreach (Product p in products)
@@ -41,17 +47,13 @@ namespace SpeechSynthesis
                     }
                 }
             };
-            this.mainWindow = mainWindow;
         }
 
         private void GrammarManager_SpeechRecognized(object sender, EventArgs e)
         {
-            //jesli rozpoznalo to sprawdz czy zawiera produkt do kupienia, jesli nei to powtorz,
-            // jesli tak idz dalej
             var args = e as SpeechRecognizedEventArgs;
             if (args != null)
             {
-
                 LogDialogUser(args.Result.Text, args.Result.Confidence);
                 if (args.Result.Confidence < 0.70)
                 {
@@ -61,34 +63,75 @@ namespace SpeechSynthesis
                 }
                 else
                 {
-                    var appendText = "";
-                    foreach (var p in ProductGrammarDict)
+                    switch (currentGrammar)
                     {
-                        var test = p.Value;
+                        case 0:
+                            ManageWhichProductGrammar(args);
+                            break;
+                        case 1:
+                            ManageHowManyProductsGrammar(args);
+                            break;
+                        case 2:
+                            ManagePersonNameGrammar(args);
+                            break;
+                        case 3:
+                            ManageAddressGrammar(args);
+                            break;
+                        case 4:
 
-                        args.Result.Words.ToList().ForEach(w =>
-                        {
-                            if (w.Text == test)
-                            {
-                                Console.WriteLine(w.Text);
-                                appendText = w.Text;
-                                mainWindow.basketListView.Items.Add(p.Key);
-                                
-                            }
-                        });
-
-
+                            break;
                     }
-
-
                     SwitchGrammar();
-                    if (!String.IsNullOrEmpty(appendText)) {
-                        LogDialogSystem($"Czyli chcesz {appendText}.");
-                    };
-                    String text = "Okej ostro lecimy widzę, ile sztuk?";
-                    LogDialogSystem(text);
                 }
             }
+        }
+
+        private void ManageAddressGrammar(SpeechRecognizedEventArgs args)
+        {
+            var value = args.Result.Text;
+            mainWindow.addressTextBox.Text = value;
+            LogDialogSystem("Dobra, zapisałem. Sprawdź se w bazie.");
+        }
+
+        private void ManagePersonNameGrammar(SpeechRecognizedEventArgs args)
+        {
+            var value = args.Result.Text;
+            LogDialogSystem($"Matka to chyba cię nie kocha, szanowny {value}.");
+            mainWindow.personTextBox.Text = value;
+            LogDialogSystem("Podaj adres wysyłki.");
+        }
+
+        private void ManageHowManyProductsGrammar(SpeechRecognizedEventArgs args)
+        {
+            var value = args.Result.Text;
+            var key = grammarManager.HowManyProductsGrammar.QuantityDict.FirstOrDefault(x => x.Value == value).Key;
+            LogDialogSystem($"Co tak mało? Tylko {value}!!!!!?????");
+            LogDialogSystem("Dobra, nieważne... Tyyy, jak ty się nazywasz, bo zapomniałem. Kolec? Stolec? ");
+        }
+
+        private void ManageWhichProductGrammar(SpeechRecognizedEventArgs args)
+        {
+            var appendText = "";
+            foreach (var p in ProductGrammarDict)
+            {
+                var test = p.Value;
+                args.Result.Words.ToList().ForEach(w =>
+                {
+                    if (w.Text == test)
+                    {
+                        Console.WriteLine(w.Text);
+                        appendText = w.Text;
+                        mainWindow.basketListView.Items.Add(p.Key);
+                    }
+                });
+            }
+
+            if (!String.IsNullOrEmpty(appendText))
+            {
+                LogDialogSystem($"Czyli chcesz {appendText}.");
+            };
+            String text = "Okej ostro lecimy widzę, ile sztuk?";
+            LogDialogSystem(text);
         }
 
         private void SwitchGrammar()
@@ -100,6 +143,9 @@ namespace SpeechSynthesis
             grammarManager.SRE.RecognizeAsync(RecognizeMode.Multiple);
             double value = ((double)currentGrammar / (double)grammarManager.pGrammars.Length) * 100;
             mainWindow.progressBar.Value = value < 100.0 ? value : 100.0;
+            Array.ForEach(mainWindow.stageLabels, label => label.Opacity = 0.2);
+            if (currentGrammar < mainWindow.stageLabels.Length)
+                mainWindow.stageLabels[currentGrammar].Opacity = 1.0;
         }
 
         private List<Product> loadProducts()
@@ -120,10 +166,12 @@ namespace SpeechSynthesis
                 Product product3 = new Product() { Name = "Skrzypce", Price = 400 };
                 Product product4 = new Product() { Name = "Dzwoneczki", Price = 35 };
                 Product product5 = new Product() { Name = "Bas", Price = 300 };
-                var products = new List<Product>();
-                products.Add(product1);
-                products.Add(product2);
-                products.Add(product3);
+                var products = new List<Product>
+                {
+                    product1,
+                    product2,
+                    product3
+                };
                 var orderProducts = new List<Product>(products);
                 products.Add(product4);
                 products.Add(product5);

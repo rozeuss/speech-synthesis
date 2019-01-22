@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace Recognition
 {
-    public class SecondGrammar
+    public class HowManyProductsGrammar
     {
         public Grammar grammar { get; }
         System.Globalization.CultureInfo pRecognitionLanguage;
+        public Dictionary<int, string> QuantityDict { get; } = new Dictionary<int, string>(); 
 
-        public SecondGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
+        public HowManyProductsGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
         {
             this.pRecognitionLanguage = pRecognitionLanguage;
             grammar = init();
@@ -21,6 +22,12 @@ namespace Recognition
         private Grammar init()
         {
             string[] strWords = new string[] { "jedną", "dwie", "trzy", "cztery" };
+            int i = 1;
+            Array.ForEach(strWords, word =>
+            {
+                QuantityDict.Add(i++, word);
+            });
+
             Choices words = new Choices(strWords);
             GrammarBuilder gramBuild = new GrammarBuilder();
             gramBuild.Append(words);

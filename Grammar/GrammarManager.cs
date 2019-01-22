@@ -13,18 +13,21 @@ namespace Recognition
         public SpeechRecognitionEngine SRE { get; }
         public System.Globalization.CultureInfo pRecognitionLanguage = new System.Globalization.CultureInfo("pl-PL");
         public Grammar[] pGrammars { get; }
-        public FirstGrammar FirstGrammar { get; }
+        public WhichProductGrammar FirstGrammar { get; }
+        public HowManyProductsGrammar HowManyProductsGrammar { get; }
 
         public GrammarManager()
         {
             SRE = new SpeechRecognitionEngine(pRecognitionLanguage);
             SRE.SpeechRecognized += SRE_SpeechRecognized;
             SRE.SetInputToDefaultAudioDevice();
-            pGrammars = new Grammar[3];     
-            FirstGrammar = new FirstGrammar(pRecognitionLanguage);
+            pGrammars = new Grammar[4];     
+            FirstGrammar = new WhichProductGrammar(pRecognitionLanguage);
             pGrammars[0] = FirstGrammar.grammar;
-            pGrammars[1] = new SecondGrammar(pRecognitionLanguage).grammar;
-            pGrammars[2] = new ThirdGrammar(pRecognitionLanguage).grammar;
+            HowManyProductsGrammar = new HowManyProductsGrammar(pRecognitionLanguage);
+            pGrammars[1] = HowManyProductsGrammar.grammar;
+            pGrammars[2] = new PersonNameGrammar(pRecognitionLanguage).grammar;
+            pGrammars[3] = new AddressGrammar(pRecognitionLanguage).grammar;
             SRE.LoadGrammar(pGrammars[0]);
         }
 

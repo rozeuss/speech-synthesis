@@ -15,9 +15,11 @@ namespace View
     {
         SpeechSynthesis.Manager manager;
         private ObservableCollection<Product> basketItems;
+        public Label[] stageLabels { get; } = new Label[4];
 
         public MainWindow()
         {
+
             manager = new SpeechSynthesis.Manager(this);
             InitializeComponent();
         }
@@ -85,6 +87,14 @@ namespace View
             GetSRE().UnloadAllGrammars();
         }
 
-
+        private void MainWindow1_Initialized(object sender, EventArgs e)
+        {
+            stageLabels[0] = etap1Label;
+            stageLabels[1] = etap2Label;
+            stageLabels[2] = etap3Label;
+            stageLabels[3] = etap4Label;
+            Array.ForEach(stageLabels, label => label.Opacity = 0.2);
+            etap1Label.Opacity = 1.0;
+        }
     }
 }
