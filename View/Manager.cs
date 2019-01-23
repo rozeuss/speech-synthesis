@@ -15,6 +15,7 @@ namespace SpeechSynthesis
         private int currentGrammar = 0;
         public Dictionary<Product, string> ProductGrammarDict { get; }
         public List<Product> products;
+        private bool addAnotherProduct = false;
 
         public Manager(MainWindow mainWindow)
         {
@@ -37,7 +38,7 @@ namespace SpeechSynthesis
 
         private void SetupProductGrammarDict()
         {
-            foreach (KeyValuePair<int, string> entry in grammarManager.FirstGrammar.productIdGrammarDictionary)
+            foreach (KeyValuePair<int, string> entry in grammarManager.WhichProductGrammar.productIdGrammarDictionary)
             {
                 foreach (Product p in products)
                 {
@@ -67,21 +68,37 @@ namespace SpeechSynthesis
                     {
                         case 0:
                             ManageWhichProductGrammar(args);
+                            SwitchGrammar();
                             break;
                         case 1:
-                            ManageHowManyProductsGrammar(args);
+                            if (args.Result.Text.Equals("nie"))
+                            {
+                                LogDialogSystem("Tyyy, jak ty się nazywasz, bo zapomniałem. Kolec? Stolec?");
+                                SwitchGrammar();
+                            }
+                            else if (args.Result.Text.Equals("tak"))
+                            {
+                                currentGrammar = -1;
+                                LogDialogSystem("To co do tego?");
+                                SwitchGrammar();
+                            } else
+                            {
+                                ManageHowManyProductsGrammar(args);
+                            }
                             break;
                         case 2:
                             ManagePersonNameGrammar(args);
+                            SwitchGrammar();
+
                             break;
                         case 3:
                             ManageAddressGrammar(args);
+                            SwitchGrammar();
                             break;
                         case 4:
-
+                            SwitchGrammar();
                             break;
                     }
-                    SwitchGrammar();
                 }
             }
         }
@@ -106,7 +123,11 @@ namespace SpeechSynthesis
             var value = args.Result.Text;
             var key = grammarManager.HowManyProductsGrammar.QuantityDict.FirstOrDefault(x => x.Value == value).Key;
             LogDialogSystem($"Co tak mało? Tylko {value}!!!!!?????");
-            LogDialogSystem("Dobra, nieważne... Tyyy, jak ty się nazywasz, bo zapomniałem. Kolec? Stolec? ");
+            LogDialogSystem("Dobra, nieważne... Jeszcze coś do tego?");
+            grammarManager.SRE.RecognizeAsyncCancel();
+            grammarManager.SRE.UnloadAllGrammars();
+            grammarManager.SRE.LoadGrammar(grammarManager.YesNoGrammar.grammar);
+            grammarManager.SRE.RecognizeAsync(RecognizeMode.Multiple);
         }
 
         private void ManageWhichProductGrammar(SpeechRecognizedEventArgs args)

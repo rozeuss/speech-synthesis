@@ -23,32 +23,31 @@ namespace Recognition
             SrgsRule ruleImie = new SrgsRule("Imię");
             SrgsOneOf imie = new SrgsOneOf(new SrgsItem[]
             {
-                new SrgsItem(0, 1, "Damian"),
-                new SrgsItem(0, 1, "Jan"),
-                new SrgsItem(0, 1, "Katarzyna"),
-                new SrgsItem(0, 1, "Paweł"),
-                new SrgsItem(0, 1, "Adam"),
-                new SrgsItem(0, 1, "Maciej"),
-                new SrgsItem(0, 1, "Maja"),
-                new SrgsItem(0, 1, "Grzegorz")
+                new SrgsItem(1, 1, "Damian"),
+                new SrgsItem(1, 1, "Jan"),
+                new SrgsItem(1, 1, "Katarzyna"),
+                new SrgsItem(1, 1, "Paweł"),
+                new SrgsItem(1, 1, "Adam"),
+                new SrgsItem(1, 1, "Maciej"),
+                new SrgsItem(1, 1, "Maja"),
+                new SrgsItem(1, 1, "Grzegorz")
             });
             ruleImie.Add(imie);
 
             SrgsRule ruleNazwisko = new SrgsRule("Nazwisko");
             SrgsOneOf nazwisko = new SrgsOneOf(new SrgsItem[]
             {
-                new SrgsItem(0, 1, "Redkiewicz"),
-                new SrgsItem(0, 1, "Piechota"),
-                new SrgsItem(0, 1, "Klatka"),
-                new SrgsItem(0, 1, "Kowalski"),
-                new SrgsItem(0, 1, "Nowak"),
-                new SrgsItem(0, 1, "Brzęczyszczykiewicz")
+                new SrgsItem(1, 1, "Redkiewicz"),
+                new SrgsItem(1, 1, "Piechota"),
+                new SrgsItem(1, 1, "Klatka"),
+                new SrgsItem(1, 1, "Kowalski"),
+                new SrgsItem(1, 1, "Nowak"),
+                new SrgsItem(1, 1, "Brzęczyszczykiewicz")
             });
             ruleNazwisko.Add(nazwisko);
 
             SrgsRule rootRule = new SrgsRule("rootBiletomat");
             rootRule.Scope = SrgsRuleScope.Public;
-
             rootRule.Add(new SrgsRuleRef(ruleImie, "IMIE"));
             rootRule.Add(new SrgsRuleRef(ruleNazwisko, "NAZWISKO"));
 

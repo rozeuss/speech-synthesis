@@ -66,6 +66,7 @@
     <Compile Include="AddressGrammar.cs" />
     <Compile Include="PersonNameGrammar.cs" />
     <Compile Include="HowManyProductsGrammar.cs" />
+    <Compile Include="YesNoGrammar.cs" />
     <Compile Include="WhichProductGrammar.cs" />
     <Compile Include="GrammarManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

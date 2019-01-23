@@ -2,31 +2,24 @@
 using Microsoft.Speech.Recognition.SrgsGrammar;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Recognition
 {
-    public class HowManyProductsGrammar
+    public class YesNoGrammar
     {
+        public Dictionary<int, string> productIdGrammarDictionary { get; }
         public Grammar grammar { get; }
         System.Globalization.CultureInfo pRecognitionLanguage;
-        public Dictionary<int, string> QuantityDict { get; } = new Dictionary<int, string>(); 
 
-        public HowManyProductsGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
+        public YesNoGrammar(System.Globalization.CultureInfo pRecognitionLanguage)
         {
             this.pRecognitionLanguage = pRecognitionLanguage;
+            productIdGrammarDictionary = new Dictionary<int, string>();
             grammar = init();
         }
         private Grammar init()
         {
-            string[] strWords = new string[] { "jedną", "dwie", "trzy", "cztery" };
-            int i = 1;
-            Array.ForEach(strWords, word =>
-            {
-                QuantityDict.Add(i++, word);
-            });
+            string[] strWords = new string[] { "tak", "nie"};
             Choices words = new Choices(strWords);
             GrammarBuilder gramBuild = new GrammarBuilder();
             gramBuild.Append(words);

@@ -23,23 +23,23 @@ namespace Recognition
             SrgsRule ruleCity = new SrgsRule("Miasto");
             SrgsOneOf city = new SrgsOneOf(new SrgsItem[]
             {
-                new SrgsItem(0, 1, "Warszawa"),
-                new SrgsItem(0, 1, "Radom"),
-                new SrgsItem(0, 1, "Gdańsk"),
-                new SrgsItem(0, 1, "Kielce"),
-                new SrgsItem(0, 1, "Poznań")
+                new SrgsItem(1, 1, "Warszawa"),
+                new SrgsItem(1, 1, "Radom"),
+                new SrgsItem(1, 1, "Gdańsk"),
+                new SrgsItem(1, 1, "Kielce"),
+                new SrgsItem(1, 1, "Poznań")
             });
             ruleCity.Add(city);
 
             SrgsRule ruleStreet = new SrgsRule("Ulica");
             SrgsOneOf street = new SrgsOneOf(new SrgsItem[]
             {
-                new SrgsItem(0, 1, "ulica Biała"),
-                new SrgsItem(0, 1, "ulica Jasna"),
-                new SrgsItem(0, 1, "ulica Ciemna"),
-                new SrgsItem(0, 1, "ulica Czarna"),
-                new SrgsItem(0, 1, "ulica Szybka"),
-                new SrgsItem(0, 1, "ulica Wolna")
+                new SrgsItem(1, 1, "ulica Biała"),
+                new SrgsItem(1, 1, "ulica Jasna"),
+                new SrgsItem(1, 1, "ulica Ciemna"),
+                new SrgsItem(1, 1, "ulica Czarna"),
+                new SrgsItem(1, 1, "ulica Szybka"),
+                new SrgsItem(1, 1, "ulica Wolna")
             });
             ruleStreet.Add(street);
 
