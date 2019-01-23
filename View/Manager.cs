@@ -15,7 +15,6 @@ namespace SpeechSynthesis
         private int currentGrammar = 0;
         public Dictionary<Product, string> ProductGrammarDict { get; }
         public List<Product> products;
-        private bool addAnotherProduct = false;
 
         public Manager(MainWindow mainWindow)
         {
@@ -73,7 +72,7 @@ namespace SpeechSynthesis
                         case 1:
                             if (args.Result.Text.Equals("nie"))
                             {
-                                LogDialogSystem("Tyyy, jak ty się nazywasz, bo zapomniałem. Kolec? Stolec?");
+                                LogDialogSystem("Podaj imię i nazwisko.");
                                 SwitchGrammar();
                             }
                             else if (args.Result.Text.Equals("tak"))
@@ -81,7 +80,8 @@ namespace SpeechSynthesis
                                 currentGrammar = -1;
                                 LogDialogSystem("To co do tego?");
                                 SwitchGrammar();
-                            } else
+                            }
+                            else
                             {
                                 ManageHowManyProductsGrammar(args);
                             }
@@ -89,14 +89,16 @@ namespace SpeechSynthesis
                         case 2:
                             ManagePersonNameGrammar(args);
                             SwitchGrammar();
-
                             break;
                         case 3:
                             ManageAddressGrammar(args);
                             SwitchGrammar();
                             break;
                         case 4:
-                            SwitchGrammar();
+                            grammarManager.SRE.RecognizeAsyncStop();
+                            grammarManager.SRE.UnloadAllGrammars();
+                            //TODO zakonczenie programu, czyli np wyswietlenie
+                            //wyniku po pobraniu z bazy i posprzatanie SRE i TTS
                             break;
                     }
                 }
@@ -121,7 +123,8 @@ namespace SpeechSynthesis
         private void ManageHowManyProductsGrammar(SpeechRecognizedEventArgs args)
         {
             var value = args.Result.Text;
-            var key = grammarManager.HowManyProductsGrammar.QuantityDict.FirstOrDefault(x => x.Value == value).Key;
+            var key = grammarManager.HowManyProductsGrammar.QuantityDict
+                .FirstOrDefault(x => x.Value == value).Key;
             LogDialogSystem($"Co tak mało? Tylko {value}!!!!!?????");
             LogDialogSystem("Dobra, nieważne... Jeszcze coś do tego?");
             grammarManager.SRE.RecognizeAsyncCancel();
@@ -146,7 +149,6 @@ namespace SpeechSynthesis
                     }
                 });
             }
-
             if (!String.IsNullOrEmpty(appendText))
             {
                 LogDialogSystem($"Czyli chcesz {appendText}.");
@@ -157,9 +159,9 @@ namespace SpeechSynthesis
 
         private void SwitchGrammar()
         {
+            int nextGrammar = ++currentGrammar;
             grammarManager.SRE.RecognizeAsyncCancel();
             grammarManager.SRE.UnloadAllGrammars();
-            int nextGrammar = ++currentGrammar;
             grammarManager.SRE.LoadGrammar(grammarManager.pGrammars[nextGrammar >= grammarManager.pGrammars.Length ? 0 : nextGrammar]);
             grammarManager.SRE.RecognizeAsync(RecognizeMode.Multiple);
             double value = ((double)currentGrammar / (double)grammarManager.pGrammars.Length) * 100;
@@ -204,7 +206,6 @@ namespace SpeechSynthesis
                 db.SaveChanges();
             }
         }
-
 
         public void StartShopping()
         {

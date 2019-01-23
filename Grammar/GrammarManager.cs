@@ -16,6 +16,7 @@ namespace Recognition
         public WhichProductGrammar WhichProductGrammar { get; }
         public HowManyProductsGrammar HowManyProductsGrammar { get; }
         public YesNoGrammar YesNoGrammar { get; } 
+
         public GrammarManager()
         {
             SRE = new SpeechRecognitionEngine(pRecognitionLanguage);
@@ -76,9 +77,5 @@ namespace Recognition
             }
         }
 
-    }
-    public class GrammarManagerEventArgs : EventArgs
-    {
-        public string RecognizedText { get; set; }
     }
 }

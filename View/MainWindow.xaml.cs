@@ -1,5 +1,6 @@
 ﻿using Microsoft.Speech.Recognition;
 using Microsoft.Speech.Synthesis;
+using SpeechSynthesis;
 using SpeechSynthesis.model;
 using System;
 using System.Collections.ObjectModel;
@@ -14,12 +15,12 @@ namespace View
     public partial class MainWindow : Window
     {
         SpeechSynthesis.Manager manager;
-        private ObservableCollection<Product> basketItems;
+        private Basket basket; //TODO moze do uzycia do wyswietlania w listview
+        //mozna uzyc do obliczania sumy zakupow i zapisu w bazie
         public Label[] stageLabels { get; } = new Label[4];
 
         public MainWindow()
         {
-
             manager = new SpeechSynthesis.Manager(this);
             InitializeComponent();
         }
@@ -59,15 +60,12 @@ namespace View
             {
                 timer.Stop();
                 manager.StartShopping();
-
             };
-
         }
 
         private void ProductsListView_Loaded(object sender, RoutedEventArgs e)
         {
             productsListView.ItemsSource = manager.products;
-
         }
 
 

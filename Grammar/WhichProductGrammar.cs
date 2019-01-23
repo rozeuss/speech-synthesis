@@ -55,12 +55,15 @@ namespace Recognition
 
             SrgsOneOf dopelnienie = new SrgsOneOf(new SrgsItem[]
             {
-               new SrgsItem(0, 1, guitarItem), new SrgsItem(0, 1, drumsItem), new SrgsItem(0, 1, violinItem)
-
+                new SrgsItem(1, 1, guitarItem),
+                new SrgsItem(1, 1, drumsItem),
+                new SrgsItem(1, 1, violinItem),
+                new SrgsItem(1, 1, bellsItem),
+                new SrgsItem(1, 1, bassItem)
             });
             ruleDopelnienie.Add(dopelnienie);
             SrgsRule rootRule = new SrgsRule("rootBiletomat");
-            rootRule.Scope = SrgsRuleScope.Public;        
+            rootRule.Scope = SrgsRuleScope.Public;
             rootRule.Add(new SrgsRuleRef(ruleOrzeczenie, "ORZECZENIE"));
             rootRule.Add(new SrgsRuleRef(ruleBezokolicznik, "BEZOKOLICZNIK"));
             rootRule.Add(new SrgsRuleRef(ruleDopelnienie, "DOPELNIENIE"));

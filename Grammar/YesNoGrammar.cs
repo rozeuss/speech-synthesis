@@ -19,7 +19,7 @@ namespace Recognition
         }
         private Grammar init()
         {
-            string[] strWords = new string[] { "tak", "nie"};
+            string[] strWords = new string[] { "tak", "nie" };
             Choices words = new Choices(strWords);
             GrammarBuilder gramBuild = new GrammarBuilder();
             gramBuild.Append(words);
