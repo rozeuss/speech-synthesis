@@ -12,6 +12,7 @@ namespace SpeechSynthesis
         { }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductsOrders> ProductsOrders { get; set; }
 
     }
 }

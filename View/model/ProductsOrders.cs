@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace SpeechSynthesis.model
 {
-    public class Order
+    public class ProductsOrders
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int OrderId { get; set; }
-        public string Person { get; set; }
-        public string Address { get; set; }
-        public virtual List<ProductsOrders> ProductsOrders { get; set; }
-        public double Total { get; set; }
+        public int ProductsOrdersId { get; set; }
+        public int Quantity { get; set; }
+        public Product Product { get; set; }
     }
 }

@@ -13,8 +13,6 @@ namespace SpeechSynthesis.model
         public int ProductId { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
-        public virtual List<Order> Orders{ get; set; }
-
-
+        //public virtual List<ProductsOrders> ProductsOrders { get; set; }
     }
 }

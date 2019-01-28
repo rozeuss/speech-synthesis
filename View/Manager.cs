@@ -15,6 +15,7 @@ namespace SpeechSynthesis
         private int currentGrammar = 0;
         public Dictionary<Product, string> ProductGrammarDict { get; }
         public List<Product> products;
+        private BasketItem basketItem;
 
         public Manager(MainWindow mainWindow)
         {
@@ -109,13 +110,40 @@ namespace SpeechSynthesis
         {
             var value = args.Result.Text;
             mainWindow.addressTextBox.Text = value;
-            LogDialogSystem("Dobra, zapisałem. Sprawdź se w bazie.");
+            saveOrder();
+            LogDialogSystem("Dziękuję. Zamówienie zostało złożone!");
+        }
+
+        private void saveOrder()
+        {
+            using (var db = new DatabaseModel())
+            {
+                var productsOrdersList = new List<ProductsOrders>();
+                foreach (var basketItem in mainWindow.Basket)
+                {
+                    var product = db.Products.Where(p => p.ProductId == basketItem.Product.ProductId).FirstOrDefault();
+                    productsOrdersList.Add(new ProductsOrders()
+                    {
+                        Product = product,
+                        Quantity = basketItem.Quantity
+                    });
+                }
+                var order = new Order()
+                {
+                    Person = mainWindow.personTextBox.Text,
+                    Address = mainWindow.addressTextBox.Text,
+                    Total = Convert.ToDouble(mainWindow.totalTextBox.Text),
+                    ProductsOrders = productsOrdersList
+                };
+                db.Orders.Add(order);
+                db.SaveChanges();
+            }
         }
 
         private void ManagePersonNameGrammar(SpeechRecognizedEventArgs args)
         {
             var value = args.Result.Text;
-            LogDialogSystem($"Matka to chyba cię nie kocha, szanowny {value}.");
+            LogDialogSystem($"Witaj {value}.");
             mainWindow.personTextBox.Text = value;
             LogDialogSystem("Podaj adres wysyłki.");
         }
@@ -125,8 +153,17 @@ namespace SpeechSynthesis
             var value = args.Result.Text;
             var key = grammarManager.HowManyProductsGrammar.QuantityDict
                 .FirstOrDefault(x => x.Value == value).Key;
-            LogDialogSystem($"Co tak mało? Tylko {value}!!!!!?????");
-            LogDialogSystem("Dobra, nieważne... Jeszcze coś do tego?");
+            //var item = mainWindow.basketListView.Items[mainWindow.basketListView.Items.Count - 1];
+            //(item as BasketItem).Quantity = key;
+            var lastItem = mainWindow.Basket[mainWindow.Basket.Count - 1];
+            lastItem.Quantity = key;
+            var total = Convert.ToDouble(mainWindow.totalTextBox.Text);
+            total = total + lastItem.Price * lastItem.Quantity;
+            mainWindow.totalTextBox.Text = total.ToString();
+            //TODO dlaczego nie musi być ta linijka pomimo bindingu?
+            mainWindow.basketListView.Items.Refresh();
+            LogDialogSystem($"Czyli chcesz {value} sztuk.");
+            LogDialogSystem("Czy chcesz coś jeszcze kupić?");
             grammarManager.SRE.RecognizeAsyncCancel();
             grammarManager.SRE.UnloadAllGrammars();
             grammarManager.SRE.LoadGrammar(grammarManager.YesNoGrammar.grammar);
@@ -145,7 +182,9 @@ namespace SpeechSynthesis
                     {
                         Console.WriteLine(w.Text);
                         appendText = w.Text;
-                        mainWindow.basketListView.Items.Add(p.Key);
+                        basketItem = new BasketItem() { Product = p.Key };
+                        //mainWindow.basketListView.Items.Add(basketItem);
+                        mainWindow.Basket.Add(basketItem);
                     }
                 });
             }
@@ -153,7 +192,7 @@ namespace SpeechSynthesis
             {
                 LogDialogSystem($"Czyli chcesz {appendText}.");
             };
-            String text = "Okej ostro lecimy widzę, ile sztuk?";
+            String text = "Ile sztuk?";
             LogDialogSystem(text);
         }
 
@@ -198,10 +237,6 @@ namespace SpeechSynthesis
                 var orderProducts = new List<Product>(products);
                 products.Add(product4);
                 products.Add(product5);
-                Order order1 = new Order() { Address = "Radom", Person = "Palys", Products = orderProducts };
-                Order order2 = new Order() { Address = "Radom", Person = "Palys", Products = orderProducts };
-                db.Orders.Add(order1);
-                db.Orders.Add(order2);
                 db.Products.AddRange(products);
                 db.SaveChanges();
             }
@@ -209,7 +244,7 @@ namespace SpeechSynthesis
 
         public void StartShopping()
         {
-            var text = "Siema?";
+            var text = "W czym mogę pomóc?";
             LogDialogSystem(text);
             grammarManager.StartRecognizing();
         }

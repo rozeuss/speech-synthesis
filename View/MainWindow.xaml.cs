@@ -15,7 +15,7 @@ namespace View
     public partial class MainWindow : Window
     {
         SpeechSynthesis.Manager manager;
-        private Basket basket; //TODO moze do uzycia do wyswietlania w listview
+        public ObservableCollection<BasketItem> Basket { get; set; }
         //mozna uzyc do obliczania sumy zakupow i zapisu w bazie
         public Label[] stageLabels { get; } = new Label[4];
 
@@ -23,8 +23,10 @@ namespace View
         {
             manager = new SpeechSynthesis.Manager(this);
             InitializeComponent();
+            Basket = new ObservableCollection<BasketItem>();
+            basketListView.ItemsSource = Basket;
+            totalTextBox.Text = (0.0).ToString();
         }
-
         private void ProductsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var a = e.AddedItems[0] as Product;

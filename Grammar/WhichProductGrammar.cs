@@ -47,11 +47,11 @@ namespace Recognition
             string violinItem = "skrzypce";
             string bellsItem = "dzwoneczki";
             string bassItem = "bas";
-            productIdGrammarDictionary.Add(6, guitarItem);
-            productIdGrammarDictionary.Add(7, drumsItem);
-            productIdGrammarDictionary.Add(8, violinItem);
-            productIdGrammarDictionary.Add(9, bellsItem);
-            productIdGrammarDictionary.Add(10, bassItem);
+            productIdGrammarDictionary.Add(1, guitarItem);
+            productIdGrammarDictionary.Add(2, drumsItem);
+            productIdGrammarDictionary.Add(3, violinItem);
+            productIdGrammarDictionary.Add(4, bellsItem);
+            productIdGrammarDictionary.Add(5, bassItem);
 
             SrgsOneOf dopelnienie = new SrgsOneOf(new SrgsItem[]
             {
